@@ -82,16 +82,24 @@ router.delete('/:id', (req, res) => {
 
 //edits one project in the db
 router.put('/:id', (req, res) => {
-    db.update(req.params.id, req.body)
+    if(!req.body.name || !req.body.description){
+        res.status(400).json({errorMessage: "You gotta gimme the deets"})
+    } else {
+        db.update(req.params.id, req.body)
         .then(num => {
-
+            if (num) {
+                res.status(200).json(req.body)
+            }
+            else{
+                res.status(404).json({errorMessage: "couldn't find that one but i looked for a while"})
+            }
         })
         .catch(err => {
             console.log(err)
             res.status(500).json({errorMessage: "Look man, I'm really sorry. It's my first day as a server."})
         })
+    }
 })
-
 
 //endpoints dawwg
 
